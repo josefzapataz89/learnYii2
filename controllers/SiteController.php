@@ -10,9 +10,14 @@ use app\models\LoginForm;
 use app\models\ContactForm;
 use app\models\ValidarFormulario;
 use app\models\ValidarFormularioAjax;
+use app\models\FormAlumnos;
+use app\models\Alumnos;
 
+/**
+ * Clases para validaciones AJAX
+ */
 use yii\widgets\ActiveForm;
-use yii\web\response;
+use yii\web\Response;
 
 class SiteController extends Controller
 {
@@ -55,6 +60,45 @@ class SiteController extends Controller
     /**
      * Action tutorial
      */
+    public function actionCreate()
+    {
+        $model = new FormAlumnos;
+        $msg = null;
+        if ( $model->load( Yii::$app->request->post() ) ) 
+        {
+            if( $model->validate() )
+            {
+                $table = new Alumnos;
+
+                $table->nombre = $model->nombre;
+                $table->apellidos = $model->apellidos;
+                $table->clase = $model->clase;
+                $table->note_final = $model->note_final;
+
+                if ( $table->insert() ) 
+                {
+                    $msg = "Enhorabuena, Registro de alumno exitoso!!!";
+
+                    $model->nombre = null;
+                    $model->apellidos = null;
+                    $model->clase = null;
+                    $model->note_final = null;
+
+                }
+                else
+                {
+                    $msg = "Error, Ha ocurrido algun problema al tratar de insertar datos de alumno.";
+                }
+            }
+            else
+            {
+                $model->getErrors();
+            }
+        }
+
+        return $this->render("create", ["model"=>$model, "msg"=>$msg]);
+    }
+
     public function actionValidarformularioajax()
     {
         $model = new ValidarFormularioAjax;
