@@ -50,6 +50,11 @@ class SiteController extends Controller
     /**
      * Action tutorial
      */
+    public function actionValidarFormulario()
+    {
+        return $this->render("validarFormulario");
+    }
+
     public function actionRequest()
     {
         $mensaje = null;
@@ -59,10 +64,12 @@ class SiteController extends Controller
         }   
         $this->redirect(["site/formulario", "mensaje"=>$mensaje]);
     }
+
     public function actionFormulario($mensaje = null)
     {
         return $this->render("formulario", ["mensaje"=>$mensaje]);
     }
+    
     public function actionSaluda( $get = "Tutorial Yii")
     {
         $mensaje = "Hola Mundo";
