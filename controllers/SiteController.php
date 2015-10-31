@@ -50,9 +50,29 @@ class SiteController extends Controller
     /**
      * Action tutorial
      */
-    public function actionSaluda()
+    public function actionRequest()
     {
-        return $this->render('saluda',['saludo'=>'Hola']);
+        $mensaje = null;
+        if( isset( $_REQUEST["nombre"] ) )
+        {
+            $mensaje = "Bien, has enviado tu nombre correctamente: ".$_REQUEST["nombre"];
+        }   
+        $this->redirect(["site/formulario", "mensaje"=>$mensaje]);
+    }
+    public function actionFormulario($mensaje = null)
+    {
+        return $this->render("formulario", ["mensaje"=>$mensaje]);
+    }
+    public function actionSaluda( $get = "Tutorial Yii")
+    {
+        $mensaje = "Hola Mundo";
+        $numeros = [0,1,2,3,4,5];
+        return $this->render(
+            'saluda',[
+                'saludo'=>$mensaje, 
+                'numeros'=>$numeros,
+                'parametroGet'=>$get
+            ]);
     }
     public function actionIndex()
     {
