@@ -8,6 +8,11 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use app\models\ValidarFormulario;
+use app\models\ValidarFormularioAjax;
+
+use yii\widgets\ActiveForm;
+use yii\web\response;
 
 class SiteController extends Controller
 {
@@ -50,9 +55,47 @@ class SiteController extends Controller
     /**
      * Action tutorial
      */
-    public function actionValidarFormulario()
+    public function actionValidarformularioajax()
     {
-        return $this->render("validarFormulario");
+        $model = new ValidarFormularioAjax;
+        $msg = null;
+        if ( $model->load( Yii::$app->request->post() ) && Yii::$app->request->isAjax ) 
+        {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ActiveForm::validate($model);
+        }
+        if( $model->load( Yii::$app->request->post() ) )
+        {
+            if( $model->validate() )
+            {
+                //acciones = consultar/registrar
+                $msg = "Enhorabuena, Formulario enviado exitosamente";
+                $model->nombre = null;
+                $model->email = null;
+            }
+            else
+            {
+                $model->getErrors();
+            }
+        }
+        return $this->render("validarformularioajax", ['model'=>$model, 'mensaje'=>$msg]);
+    }
+
+    public function actionValidarformulario()
+    {
+        $model = new ValidarFormulario;
+        if ( $model->load( Yii::$app->request->post() ) ) 
+        {
+            if( $model->validate() )
+            {
+                //acciones = consultar/registrar
+            }
+            else
+            {
+                $model->getErrors();
+            }
+        }
+        return $this->render("validarformulario", ['model'=>$model]);
     }
 
     public function actionRequest()

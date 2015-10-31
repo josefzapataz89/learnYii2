@@ -3,11 +3,14 @@
 	use yii\widgets\ActiveForm;
 ?>
 
-<h1>Validar Formulario</h1>
+<h1>Validar Formulario Ajax</h1>
+<h3><?= $mensaje ?></h3>
 <?php $form = ActiveForm::begin(
 	[
+		"id" => "ajaxForm",
 		"method" => "post",
-		"enableClientValidation" => true,
+		"enableClientValidation" => false,
+		"enableAjaxValidation" => true,
 	]
 	) ?>
 
