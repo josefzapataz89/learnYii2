@@ -43,7 +43,31 @@
 				<td><?= $alumno->clase ?></td>
 				<td><?= $alumno->note_final ?></td>
 				<td><a href="#">Editar</a></td>
-				<td><a href="#">Eliminar</a></td>
+				<td>
+					<!-- INICIO MODAL -->
+					<a href="#" data-toggle="modal" data-target="#id_alumno_<?= $alumno->id_alumno ?>">Eliminar</a>
+					<div class="modal fade" role="dialog" aria-hidden="true" id="id_alumno_<?= $alumno->id_alumno ?>">
+					  <div class="modal-dialog">
+					    <div class="modal-content">
+					      <div class="modal-header">
+					        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					        <h4 class="modal-title">Eliminar Alumno</h4>
+					      </div>
+					      <div class="modal-body">
+					        <p>¿Realmente desea eliminar al alumno con id <?= $alumno->id_alumno ?>?</p>
+					      </div>
+					      <div class="modal-footer">
+					      	<?= Html::beginForm(Url::toRoute("site/delete"), "POST") ?>
+					      		<input type="hidden" name="id_alumno" value="<?= $alumno->id_alumno ?>">
+						        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+						        <button type="submit" class="btn btn-primary">Eliminar</button>
+						    <?= Html::endForm() ?>
+					      </div>
+					    </div><!-- /.modal-content -->
+					  </div><!-- /.modal-dialog -->
+					</div><!-- /.modal -->
+					<!-- FIN MODAL -->
+				</td>
 			</tr>
 		<?php endforeach ?>
 	</tbody>

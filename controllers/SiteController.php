@@ -16,6 +16,8 @@ use app\models\FormSearch;
 use yii\helpers\Html;
 //  paginación
 use yii\data\Pagination;
+//  Delete
+use yii\helpers\Url;
 
 /**
  * Clases para validaciones AJAX
@@ -64,6 +66,33 @@ class SiteController extends Controller
     /**
      * Action tutorial
      */
+    public function actionDelete()
+    {
+        if( Yii::$app->request->post() )
+        {
+            $id_alumno = Html::encode($_POST["id_alumno"]);
+            if( (int)$id_alumno )
+            {
+                if( Alumnos::deleteAll("id_alumno=:id_alumno", [":id_alumno"=>$id_alumno]) )
+                {
+                    echo "Alumno con id alumno $id_alumno eliminado con exito, redireccionamos...";
+                    echo "<meta http-equiv='refresh' content='3;".Url::toRoute('site/view')."'>";
+                }
+                else
+                {
+                    echo "Ha ocurrido un erro al eliminar el alumno, redireccionamos...";
+                    echo "<meta http-equiv='refresh' content='3;".Url::toRoute('site/view')."'>";
+                }
+            }
+            else
+            {
+                echo "Ha ocurrido un erro al eliminar el alumno, redireccionamos...";
+                echo "<meta http-equiv='refresh' content='3;".Url::toRoute('site/view')."'>";
+            }
+        }
+        else
+            return $this->redirect(["site/view"]);
+    }
     public function actionView()
     {
         $table = new Alumnos;
