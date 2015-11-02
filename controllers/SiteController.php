@@ -14,6 +14,8 @@ use app\models\FormAlumnos;
 use app\models\Alumnos;
 use app\models\FormSearch;
 use yii\helpers\Html;
+//  paginación
+use yii\data\Pagination;
 
 /**
  * Clases para validaciones AJAX
@@ -75,15 +77,43 @@ class SiteController extends Controller
             if( $form->validate() )
             {
                 $search = Html::encode($form->q);
-                $model = $table->find()->where('id_alumno LIKE :data OR nombre LIKE :data OR apellidos LIKE :data')->addParams([":data"=>"%".$search."%"])->all();
+                #$model = $table->find()->where('id_alumno LIKE :data OR nombre LIKE :data OR apellidos LIKE :data')->addParams([":data"=>"%".$search."%"])->all();
+                $table = Alumnos::find()
+                        ->where(["like", "id_alumno", $search])
+                        ->orWhere(["like", "nombre", $search])
+                        ->orWhere(["like", "apellidos", $search]);
+                // clonar el objeto $table una vez hecha la consulta
+                // se crea la instancia para la paginacion
+                $count = clone $table;
+                $pages = new Pagination([
+                    "pageSize" => 2,                    //  elementos por pagina
+                    "totalCount" => $count->count(),    //  contamos la cantidad de registros traidos por la consulta
+                    ]);
+                $model = $table
+                        ->offset($pages->offset)
+                        ->limit($pages->limit)
+                        ->all();
             }
             else
             {
                 $form->getErrors;
             }
         }
+        else
+        {
+            $table = Alumnos::find();
+            $count = clone $table;
+            $pages = new Pagination([
+                "pageSize" => 2,                    //  elementos por pagina
+                "totalCount" => $count->count(),    //  contamos la cantidad de registros traidos por la consulta
+                ]);
+            $model = $table
+                ->offset($pages->offset)
+                ->limit($pages->limit)
+                ->all();
+        }
 
-        return $this->render("view", ["model"=>$model, "form"=>$form, "search"=>$search]);
+        return $this->render("view", ["model"=>$model, "form"=>$form, "search"=>$search, "pages"=>$pages]);
     }
     public function actionCreate()
     {

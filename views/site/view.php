@@ -3,6 +3,8 @@
 	//para editar
 	use yii\helpers\Html;
 	use yii\widgets\ActiveForm;
+	use yii\data\Pagination;
+	use yii\widgets\LinkPager;
 ?>
 
 <a href="<?= Url::toRoute('site/create') ?>">Crear un nuevo Alumno</a>
@@ -46,3 +48,6 @@
 		<?php endforeach ?>
 	</tbody>
 </table>
+<?= LinkPager::widget([
+	"pagination" => $pages,
+	]) ?>
