@@ -42,7 +42,7 @@
 				<td><?= $alumno->apellidos ?></td>
 				<td><?= $alumno->clase ?></td>
 				<td><?= $alumno->note_final ?></td>
-				<td><a href="#">Editar</a></td>
+				<td><a href="<?= Url::toRoute(['site/update', 'id_alumno'=>$alumno->id_alumno]) ?>">Editar</a></td>
 				<td>
 					<!-- INICIO MODAL -->
 					<a href="#" data-toggle="modal" data-target="#id_alumno_<?= $alumno->id_alumno ?>">Eliminar</a>
