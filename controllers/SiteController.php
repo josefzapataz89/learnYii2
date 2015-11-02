@@ -12,6 +12,8 @@ use app\models\ValidarFormulario;
 use app\models\ValidarFormularioAjax;
 use app\models\FormAlumnos;
 use app\models\Alumnos;
+use app\models\FormSearch;
+use yii\helpers\Html;
 
 /**
  * Clases para validaciones AJAX
@@ -60,6 +62,29 @@ class SiteController extends Controller
     /**
      * Action tutorial
      */
+    public function actionView()
+    {
+        $table = new Alumnos;
+        $model = $table->find()->orderBy('clase, note_final')->all();
+
+        $form = new FormSearch;
+        $search = null;
+
+        if( $form->load( Yii::$app->request->get() ) )
+        {
+            if( $form->validate() )
+            {
+                $search = Html::encode($form->q);
+                $model = $table->find()->where('id_alumno LIKE :data OR nombre LIKE :data OR apellidos LIKE :data')->addParams([":data"=>"%".$search."%"])->all();
+            }
+            else
+            {
+                $form->getErrors;
+            }
+        }
+
+        return $this->render("view", ["model"=>$model, "form"=>$form, "search"=>$search]);
+    }
     public function actionCreate()
     {
         $model = new FormAlumnos;
@@ -78,12 +103,10 @@ class SiteController extends Controller
                 if ( $table->insert() ) 
                 {
                     $msg = "Enhorabuena, Registro de alumno exitoso!!!";
-
                     $model->nombre = null;
                     $model->apellidos = null;
                     $model->clase = null;
                     $model->note_final = null;
-
                 }
                 else
                 {
